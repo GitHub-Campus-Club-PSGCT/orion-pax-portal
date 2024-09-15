@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import {
   Card,
@@ -83,6 +82,8 @@ export default function StudentAccount() {
     alert("Links saved successfully!");
   };
 
+  // TODO: Add a logout button
+
   return (
     <div className="container mx-auto p-4 space-y-4 max-w-4xl">
       <Card className="p-4">
@@ -164,7 +165,6 @@ export default function StudentAccount() {
                       {platform === "github" && <GithubIcon />}
                       {platform === "email" && <MailLogo />}
                       {platform === "snapchat" && <SnapChatLogo />}
-                      <div className="bg-gray-300 w-6 h-6 rounded-full"></div>
                     </div>
                     <Input
                       fullWidth
