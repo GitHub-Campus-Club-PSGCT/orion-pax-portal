@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.text-8xl {
+  font-size: 20rem; /* or any size you prefer */
+}
