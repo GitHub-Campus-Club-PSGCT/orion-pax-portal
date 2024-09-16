@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 import { Logo } from "@/components/icons";
 import { createClient } from "@/utils/supabase/server";
 
+// TODO - yet to test the supabase client and the completeProfile function
+
 export default function OnBoardingPage() {
   async function completeProfile(formData: FormData) {
     const supabase = createClient();
