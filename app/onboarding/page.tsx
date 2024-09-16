@@ -1,11 +1,43 @@
 "use client";
 import React from "react";
-import { Logo } from "@/components/icons";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Textarea } from "@nextui-org/react";
+import { redirect } from "next/navigation";
+
+import { Logo } from "@/components/icons";
+import { createClient } from "@/utils/supabase/server";
 
 export default function OnBoardingPage() {
+  async function completeProfile(formData: FormData) {
+    const supabase = createClient();
+
+    // type-casting here for convenience
+    // in practice, you should validate your inputs
+    const profile = {
+      full_name: formData.get("full_name") as string,
+      avatar_url: formData.get("avatar_url") as string,
+      website: formData.get("website") as string,
+      phone: formData.get("phone") as string,
+      year: formData.get("year") as string,
+      projects_count: formData.get("projects_count") as string,
+      bio: formData.get("bio") as string,
+      roll_num: formData.get("roll_num") as string,
+      email: supabase.auth.getUser()?.then((user) => user.data.user?.email),
+    };
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .upsert(profile)
+      .select();
+
+    if (error) {
+      redirect("/error");
+    }
+
+    redirect("/account");
+  }
+
   return (
     <div className="flex w-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 gap-12">
       <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full">
@@ -31,8 +63,8 @@ export default function OnBoardingPage() {
                 className="w-full"
                 id="full_name"
                 name="full_name"
-                type="text"
                 size="lg"
+                type="text"
               />
               <br />
             </div>
@@ -50,8 +82,8 @@ export default function OnBoardingPage() {
                 className="w-full"
                 id="avatar_url"
                 name="avatar_url"
-                type="url"
                 size="lg"
+                type="url"
               />
               <br />
             </div>
@@ -69,8 +101,8 @@ export default function OnBoardingPage() {
                 className="w-full"
                 id="website"
                 name="website"
-                type="url"
                 size="lg"
+                type="url"
               />
               <br />
             </div>
@@ -88,8 +120,8 @@ export default function OnBoardingPage() {
                 className="w-full"
                 id="phone"
                 name="phone"
-                type="tel"
                 size="lg"
+                type="tel"
               />
               <br />
             </div>
@@ -106,11 +138,11 @@ export default function OnBoardingPage() {
               <Input
                 className="w-full"
                 id="year"
-                name="year"
-                type="number"
-                min="1"
                 max="4"
+                min="1"
+                name="year"
                 size="lg"
+                type="number"
               />
               <br />
             </div>
@@ -127,10 +159,10 @@ export default function OnBoardingPage() {
               <Input
                 className="w-full"
                 id="projects_count"
-                name="projects_count"
-                type="number"
                 min="0"
+                name="projects_count"
                 size="lg"
+                type="number"
               />
               <br />
             </div>
@@ -162,8 +194,8 @@ export default function OnBoardingPage() {
                 className="w-full"
                 id="roll_num"
                 name="roll_num"
-                type="text"
                 size="lg"
+                type="text"
               />
               <br />
             </div>
@@ -171,11 +203,11 @@ export default function OnBoardingPage() {
 
           <div>
             <Button
-              color="primary"
               className="w-full"
-              variant="ghost"
-              type="submit"
+              color="primary"
               size="lg"
+              type="submit"
+              variant="ghost"
             >
               Complete Profile
             </Button>
