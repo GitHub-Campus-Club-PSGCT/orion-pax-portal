@@ -1,4 +1,5 @@
 "use server";
+
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -15,8 +16,7 @@ export async function completeProfile(formData: FormData) {
   }
 
   const profile = {
-    id: user.id, // Add this line to set the user_id
-    username: (user.id + formData.get("roll_num")) as string,
+    id: user.id, // Use the user's ID from auth
     full_name: formData.get("full_name") as string,
     avatar_url: formData.get("avatar_url") as string,
     website: formData.get("website") as string,
@@ -30,7 +30,11 @@ export async function completeProfile(formData: FormData) {
 
   console.log("Server-side: Profile data", profile);
 
-  const { error } = await supabase.from("profiles").upsert(profile).select();
+  // Start a transaction
+  const { error } = await supabase.rpc("update_profile_and_links", {
+    profile_data: profile,
+    user_id: user.id,
+  });
 
   if (error) {
     console.error("Server-side: Error updating profile", error);
