@@ -1,95 +1,255 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
   CardHeader,
   Avatar,
-  Badge,
-  Tabs,
   Tab,
+  Tabs,
   Input,
-  Textarea,
+  Badge,
   Button,
+  Textarea,
 } from "@nextui-org/react";
 import { useTheme as useNextTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 import {
   InstagramLogo,
   MediumLogo,
-  LeetCodeLogo,
-  LinkedInLogo,
   GithubIcon,
   MailLogo,
+  LinkedInLogo,
+  LeetCodeLogo,
   SnapChatLogo,
 } from "@/components/icons";
 
+import { createClient } from "@/utils/supabase/client";
+
+interface Achievement {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+interface Certificate {
+  id: string;
+  name: string;
+  date: string;
+  icon: string;
+}
+
+interface Event {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+}
+
+interface StudentData {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  profileImage: string;
+  major: string;
+  year: string;
+  projects: number;
+  bio: string;
+  website: string;
+  username: string;
+  achievements: Achievement[];
+  certificates: Certificate[];
+  events: Event[];
+}
+
+interface EditableLinks {
+  github: string;
+  email: string;
+  linkedin: string;
+  leetcode: string;
+  medium: string;
+  instagram: string;
+  snapchat: string;
+}
+
 export default function StudentAccount() {
+  const supabase = createClient();
+  const router = useRouter();
   const { setTheme } = useNextTheme();
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // This would typically come from a database or API
-  const [studentData, setStudentData] = useState({
-    name: "Alex Johnson",
-    email: "alex.johnson@example.com",
-    phone: "+1 (555) 123-4567",
-    profileImage: "/placeholder.svg?height=200&width=200",
-    major: "Computer Science",
-    year: "3rd Year",
-    projects: 10,
-    achievements: [
-      { name: "Leadership", avatar: "👑" },
-      { name: "Community Service", avatar: "🤝" },
-      { name: "Academic Excellence", avatar: "🎓" },
-      { name: "Innovation", avatar: "💡" },
-    ],
-    certificates: [
-      { name: "Web Development Fundamentals", date: "2023-05-15", icon: "🌐" },
-      { name: "Public Speaking Workshop", date: "2023-07-22", icon: "🎤" },
-      { name: "Data Science Bootcamp", date: "2023-09-10", icon: "📊" },
-    ],
-    upcomingEvents: [
-      { name: "Career Fair", date: "2023-12-01", time: "10:00 AM - 4:00 PM" },
-      { name: "Hackathon", date: "2023-12-15", time: "9:00 AM - 9:00 PM" },
-    ],
-    bio: "As a passionate Computer Science student, I'm dedicated to leveraging technology to solve real-world problems. My journey in the world of coding began with a simple 'Hello, World!' program, and since then, I've been on an exciting adventure of continuous learning and growth.",
-    links: {
-      github: "https://github.com/alexjohnson",
-      email: "alex.johnson@example.com",
-      linkedin: "https://linkedin.com/in/alexjohnson",
-      leetcode: "https://leetcode.com/alexjohnson",
-      medium: "https://medium.com/@alexjohnson",
-      instagram: "https://instagram.com/alexjohnson",
-      snapchat: "alexjohnson",
-    },
+  const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [editedBio, setEditedBio] = useState("");
+  const [editedLinks, setEditedLinks] = useState<EditableLinks>({
+    github: "",
+    email: "",
+    linkedin: "",
+    leetcode: "",
+    medium: "",
+    instagram: "",
+    snapchat: "",
   });
 
-  const [editedBio, setEditedBio] = useState(studentData.bio);
-  const [editedLinks, setEditedLinks] = useState(studentData.links);
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    setTheme(isDarkMode ? "light" : "dark");
+        if (user) {
+          // Fetch profile data
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("email", user.email)
+            .single();
+
+          if (profileError) throw profileError;
+
+          // Fetch achievements
+          const { data: achievementsData, error: achievementsError } =
+            await supabase
+              .from("achievements")
+              .select("*")
+              .eq("profile_id", user.id);
+
+          if (achievementsError) throw achievementsError;
+
+          // Fetch certificates
+          const { data: certificatesData, error: certificatesError } =
+            await supabase
+              .from("certificates")
+              .select("*")
+              .eq("profile_id", user.id);
+
+          if (certificatesError) throw certificatesError;
+
+          // Fetch events
+          const { data: eventsData, error: eventsError } = await supabase
+            .from("events")
+            .select("*")
+            .eq("profile_id", user.id);
+
+          if (eventsError) throw eventsError;
+
+          // Combine all data
+          const combinedData: StudentData = {
+            ...profileData,
+            achievements: achievementsData,
+            certificates: certificatesData,
+            events: eventsData,
+          };
+
+          setStudentData(combinedData);
+          setEditedBio(combinedData.bio || "");
+          setEditedLinks({
+            github: combinedData.website || "",
+            email: combinedData.username || "",
+            linkedin: "",
+            leetcode: "",
+            medium: "",
+            instagram: "",
+            snapchat: "",
+          });
+        } else {
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProfile();
+  }, [router, supabase]);
+
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      alert("Failed to sign out. Please try again.");
+    }
   };
 
-  const saveBio = () => {
-    setStudentData((prev) => ({ ...prev, bio: editedBio }));
-    alert("Bio saved successfully!");
+  const saveBio = async () => {
+    if (!studentData) return;
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ bio: editedBio })
+        .eq("id", studentData.id);
+
+      if (error) throw error;
+
+      setStudentData((prev) => (prev ? { ...prev, bio: editedBio } : null));
+      alert("Bio saved successfully!");
+    } catch (error) {
+      console.error("Failed to save bio:", error);
+      alert("Failed to save bio");
+    }
   };
 
-  const saveLinks = () => {
-    setStudentData((prev) => ({ ...prev, links: editedLinks }));
-    alert("Links saved successfully!");
+  const saveLinks = async () => {
+    if (!studentData) return;
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          website: editedLinks.github,
+          username: editedLinks.email,
+        })
+        .eq("id", studentData.id);
+
+      if (error) throw error;
+
+      setStudentData((prev) =>
+        prev
+          ? {
+              ...prev,
+              website: editedLinks.github,
+              username: editedLinks.email,
+            }
+          : null
+      );
+      alert("Links saved successfully!");
+    } catch (error) {
+      console.error("Failed to save links:", error);
+      alert("Failed to save links");
+    }
   };
 
-  // TODO: Add a logout button
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!studentData) {
+    return <div>No profile data found</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!studentData) {
+    return <div>No profile data found</div>;
+  }
 
   return (
     <div className="container mx-auto p-4 space-y-4 max-w-4xl">
+      <Button onClick={signOut}>Sign Out</Button>
+
       <Card className="p-4">
         <CardBody>
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-            <Avatar src={studentData.profileImage} className="w-24 h-24" />
+            <Avatar className="w-24 h-24" src={studentData.profileImage} />
             <div className="flex-grow">
               <h2 className="text-2xl font-bold">{studentData.name}</h2>
               <p className="text-default-500">{studentData.major}</p>
@@ -103,14 +263,6 @@ export default function StudentAccount() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <p>
-              <strong>Email:</strong> {studentData.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {studentData.phone}
-            </p>
-          </div>
         </CardBody>
       </Card>
 
@@ -120,13 +272,53 @@ export default function StudentAccount() {
         </CardHeader>
         <CardBody>
           <div className="grid grid-cols-2 gap-4">
-            {studentData.achievements.map((achievement, index) => (
-              <div key={index} className="flex items-center gap-3 p-2">
+            {studentData.achievements.map((achievement) => (
+              <div key={achievement.id} className="flex items-center gap-3 p-2">
                 <Avatar
-                  icon={<span className="text-2xl">{achievement.avatar}</span>}
                   className="bg-gradient-to-br from-indigo-500 to-pink-500 text-white"
+                  icon={<span className="text-2xl">{achievement.avatar}</span>}
                 />
                 <span>{achievement.name}</span>
+              </div>
+            ))}
+          </div>
+        </CardBody>
+      </Card>
+
+      <Card className="p-4">
+        <CardHeader>
+          <h3 className="text-xl font-bold">Certificates</h3>
+        </CardHeader>
+        <CardBody>
+          <div className="space-y-2">
+            {studentData.certificates.map((cert) => (
+              <div key={cert.id} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{cert.icon}</span>
+                  <span>{cert.name}</span>
+                </div>
+                <span className="text-sm text-default-500">{cert.date}</span>
+              </div>
+            ))}
+          </div>
+        </CardBody>
+      </Card>
+
+      <Card className="p-4">
+        <CardHeader>
+          <h3 className="text-xl font-bold">Upcoming Events</h3>
+        </CardHeader>
+        <CardBody>
+          <div className="space-y-2">
+            {studentData.events.map((event) => (
+              <div key={event.id} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>📅</span>
+                  <span>{event.name}</span>
+                </div>
+                <div className="text-sm text-default-500">
+                  {event.date} | {event.time}
+                </div>
               </div>
             ))}
           </div>
@@ -146,7 +338,7 @@ export default function StudentAccount() {
                 minRows={3}
                 maxRows={5}
                 placeholder="Enter your bio here..."
-                className="mb-4"
+                className="mb-4 p-5"
               />
               <Button color="primary" onClick={saveBio} className="mt-4">
                 Save Bio
@@ -157,7 +349,6 @@ export default function StudentAccount() {
                 {Object.entries(editedLinks).map(([platform, url]) => (
                   <div key={platform} className="flex items-center gap-2">
                     <div className="w-8 h-8 flex items-center justify-center">
-                      {/* Placeholder for SVG */}
                       {platform === "instagram" && <InstagramLogo />}
                       {platform === "medium" && <MediumLogo />}
                       {platform === "leetcode" && <LeetCodeLogo />}
@@ -188,46 +379,6 @@ export default function StudentAccount() {
               </div>
             </Tab>
           </Tabs>
-        </CardBody>
-      </Card>
-
-      <Card className="p-4">
-        <CardHeader>
-          <h3 className="text-xl font-bold">Certificates</h3>
-        </CardHeader>
-        <CardBody>
-          <div className="space-y-2">
-            {studentData.certificates.map((cert, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{cert.icon}</span>
-                  <span>{cert.name}</span>
-                </div>
-                <span className="text-sm text-default-500">{cert.date}</span>
-              </div>
-            ))}
-          </div>
-        </CardBody>
-      </Card>
-
-      <Card className="p-4">
-        <CardHeader>
-          <h3 className="text-xl font-bold">Upcoming Events</h3>
-        </CardHeader>
-        <CardBody>
-          <div className="space-y-2">
-            {studentData.upcomingEvents.map((event, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span>📅</span>
-                  <span>{event.name}</span>
-                </div>
-                <div className="text-sm text-default-500">
-                  {event.date} | {event.time}
-                </div>
-              </div>
-            ))}
-          </div>
         </CardBody>
       </Card>
     </div>

@@ -4,22 +4,44 @@ import { Logo } from "@/components/icons";
 import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
+import { useFormStatus } from "react-dom";
 
-import { signup } from "@/app/login/actions";
+// Define the prop types for the LoginForm component
+interface LoginFormProps {
+  loginAction: (formData: FormData) => Promise<void>;
+}
 
-export default function SignUpPage() {
+// Create a submit button component that uses useFormStatus
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      color="primary"
+      className="w-full"
+      variant="ghost"
+      type="submit"
+      size="lg"
+      disabled={pending}
+    >
+      {pending ? "Signing in..." : "Sign in"}
+    </Button>
+  );
+}
+
+export default function LoginForm({ loginAction }: LoginFormProps) {
   return (
     <div className="flex w-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 gap-12">
       <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full">
         <Logo className="w-64 h-64 p-5" height={100} width={250} />
         <br />
         <h2 className="mt-16 text-center text-4xl font-light leading-9 tracking-tight text-gray-200">
-          Sign up and let&apos;s build some cool stuff...
+          Sign in to start innovating...
         </h2>
         <br />
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full max-w-md w-full">
-        <form className="space-y-8 flex flex-col" method="POST">
+        <form action={loginAction} className="space-y-8 flex flex-col">
           <div className="flex flex-col justify-start items-start w-full">
             <label
               className="block text-lg font-medium leading-6 text-gray-200 mb-2"
@@ -48,6 +70,16 @@ export default function SignUpPage() {
               >
                 Password
               </label>
+              <div className="text-lg text-right">
+                <Link
+                  className="font-light"
+                  color="warning"
+                  underline="hover"
+                  href="/forgot-password"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </div>
             <div className="w-full">
               <Input
@@ -62,28 +94,15 @@ export default function SignUpPage() {
               <br />
             </div>
           </div>
-          <div>
-            <Button
-              color="primary"
-              className="w-full"
-              variant="ghost"
-              type="submit"
-              size="lg"
-              formAction={signup}
-            >
-              Sign Up
-            </Button>
-          </div>
+          <SubmitButton />
         </form>
         <p className="mt-12 text-center text-lg text-gray-500">
-          Already a member?{" "}
-          <Link color="warning" underline="hover" href="/login">
-            Sign In Now
+          Not a member?{" "}
+          <Link color="warning" underline="hover" href="/login/sign-up">
+            Sign Up Now
           </Link>
         </p>
       </div>
-      <br />
-      <br />
     </div>
   );
 }
