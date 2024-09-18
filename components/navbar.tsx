@@ -7,6 +7,7 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import { link as linkStyles } from "@nextui-org/theme";
@@ -17,11 +18,6 @@ import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/icons";
 
 export async function Navbar() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   return (
     <NextUINavbar maxWidth="full" position="sticky" isBlurred isBordered>
       <NavbarContent>
@@ -51,14 +47,12 @@ export async function Navbar() {
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Button
-            href={user ? "/account" : "/login"}
-            as={Link}
-            variant="ghost"
-            color="warning"
-          >
-            {user ? "Account" : "Sign In"}
-          </Button>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </NavbarItem>
       </NavbarContent>
 

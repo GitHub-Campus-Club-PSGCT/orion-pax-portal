@@ -9,6 +9,9 @@
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
+		"@clerk/elements": "^0.15.4",
+		"@clerk/nextjs": "^5.5.5",
+		"@clerk/themes": "^2.1.30",
 		"@nextui-org/button": "2.0.38",
 		"@nextui-org/code": "2.0.33",
 		"@nextui-org/input": "2.2.5",
@@ -35,8 +38,8 @@
 		"jsdom": "^25.0.0",
 		"next": "^14.2.11",
 		"next-themes": "^0.2.1",
-		"react": "18.3.1",
-		"react-dom": "18.3.1",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
 		"winston": "^3.14.2"
 	},
 	"devDependencies": {
