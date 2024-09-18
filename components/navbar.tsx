@@ -23,7 +23,7 @@ export async function Navbar() {
   } = await supabase.auth.getUser();
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar maxWidth="full" position="sticky" isBlurred isBordered>
       <NavbarContent>
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -51,9 +51,14 @@ export async function Navbar() {
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href={user ? "/account" : "/login"}>
+          <Button
+            href={user ? "/account" : "/login"}
+            as={Link}
+            variant="ghost"
+            color="warning"
+          >
             {user ? "Account" : "Sign In"}
-          </Link>
+          </Button>
         </NavbarItem>
       </NavbarContent>
 
