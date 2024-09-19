@@ -102,11 +102,11 @@ export default function CompetitionPage({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h1 className="text-3xl md:text-4xl font-bold">{title}</h1>
         <Button
-          color="primary"
-          size="lg"
           as={NextLink}
-          variant="shadow"
+          color="primary"
           href={`/${buttonRedirect.replace(/^\//, "")}`}
+          size="lg"
+          variant="shadow"
         >
           Start Now
         </Button>

@@ -1,16 +1,9 @@
 "use client";
 import React from "react";
-import { Link } from "@nextui-org/link";
 import { Image } from "@nextui-org/react";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
-import { Logo } from "@/components/icons";
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { Card, CardBody } from "@nextui-org/react";
 
-import { Button, Card, CardBody, Input } from "@nextui-org/react";
+import { Logo } from "@/components/icons";
 
 export default function HomePage() {
   return (
@@ -57,7 +50,7 @@ export default function HomePage() {
           </div>
         </div>
         <div>
-          <Image src="/demo.png" alt="Hero Image" width={1000} height={500} />
+          <Image alt="Hero Image" height={500} src="/demo.png" width={1000} />
         </div>
       </section>
 
@@ -72,10 +65,10 @@ export default function HomePage() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
             />
           </svg>
         </div>

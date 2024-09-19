@@ -19,6 +19,6 @@ export function createClient() {
           cookieStore.set(name, "", { ...options, maxAge: 0 });
         },
       },
-    }
+    },
   );
 }

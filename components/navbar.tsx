@@ -2,24 +2,22 @@ import {
   Navbar as NextUINavbar,
   NavbarContent,
   NavbarMenu,
-  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Link } from "@nextui-org/link";
-import { Button } from "@nextui-org/button";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-import { createClient } from "@/utils/supabase/server";
+
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/icons";
 
 export async function Navbar() {
   return (
-    <NextUINavbar maxWidth="full" position="sticky" isBlurred isBordered>
+    <NextUINavbar isBlurred isBordered maxWidth="full" position="sticky">
       <NavbarContent>
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -33,7 +31,7 @@ export async function Navbar() {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
                 )}
                 color="foreground"
                 href={item.href}

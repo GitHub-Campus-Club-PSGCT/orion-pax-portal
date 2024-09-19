@@ -1,10 +1,12 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+
+import { createClient } from "@/utils/supabase/server";
 
 export async function completeProfile(formData: FormData) {
   const supabase = createClient();
+
   console.log("Server-side: Received formData", formData);
 
   const {
@@ -42,5 +44,6 @@ export async function completeProfile(formData: FormData) {
   }
 
   console.log("Server-side: Profile updated successfully");
+
   return redirect("/account");
 }

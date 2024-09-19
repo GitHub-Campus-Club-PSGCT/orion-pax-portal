@@ -32,10 +32,10 @@ export default function CompetitionCard({
         <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
           <div className="flex flex-grow gap-2 items-center">
             <Chip
+              className="text-tiny text-white/90"
+              color={type.toLowerCase() === "hackathon" ? "warning" : "primary"}
               size="sm"
               variant="flat"
-              color={type.toLowerCase() === "hackathon" ? "warning" : "primary"}
-              className="text-tiny text-white/90"
             >
               {type}
             </Chip>

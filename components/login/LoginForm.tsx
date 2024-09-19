@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
-import { Logo } from "@/components/icons";
 import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { useFormStatus } from "react-dom";
+
+import { Logo } from "@/components/icons";
 
 // Define the prop types for the LoginForm component
 interface LoginFormProps {
@@ -17,12 +18,12 @@ function SubmitButton() {
 
   return (
     <Button
-      color="primary"
       className="w-full"
-      variant="ghost"
-      type="submit"
-      size="lg"
+      color="primary"
       disabled={pending}
+      size="lg"
+      type="submit"
+      variant="ghost"
     >
       {pending ? "Signing in..." : "Sign in"}
     </Button>
@@ -56,8 +57,8 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
                 className="w-full"
                 id="email"
                 name="email"
-                type="email"
                 size="lg"
+                type="email"
               />
               <br />
             </div>
@@ -74,8 +75,8 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
                 <Link
                   className="font-light"
                   color="warning"
-                  underline="hover"
                   href="/forgot-password"
+                  underline="hover"
                 >
                   Forgot password?
                 </Link>
@@ -88,8 +89,8 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
                 className="w-full"
                 id="password"
                 name="password"
-                type="password"
                 size="lg"
+                type="password"
               />
               <br />
             </div>
@@ -98,7 +99,7 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
         </form>
         <p className="mt-12 text-center text-lg text-gray-500">
           Not a member?{" "}
-          <Link color="warning" underline="hover" href="/login/sign-up">
+          <Link color="warning" href="/login/sign-up" underline="hover">
             Sign Up Now
           </Link>
         </p>

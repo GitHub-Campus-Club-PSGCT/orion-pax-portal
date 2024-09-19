@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Textarea } from "@nextui-org/react";
+
 import { Logo } from "@/components/icons";
 import { completeProfile } from "@/app/onboarding/actions";
 
@@ -18,11 +19,12 @@ export default function OnboardingForm() {
     try {
       const form = event.currentTarget;
       const formData = new FormData(form);
+
       await completeProfile(formData);
     } catch (error) {
       console.error("Error submitting form:", error);
       setFormError(
-        "An error occurred while submitting the form. Please try again."
+        "An error occurred while submitting the form. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -41,9 +43,9 @@ export default function OnboardingForm() {
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full max-w-md w-full">
         <form
+          autoComplete="off"
           className="space-y-8 flex flex-col"
           onSubmit={handleSubmit}
-          autoComplete="off"
         >
           <div className="flex flex-col justify-start items-start w-full">
             <label

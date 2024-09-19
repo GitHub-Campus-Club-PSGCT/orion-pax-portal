@@ -1,5 +1,3 @@
-import { title } from "@/components/primitives";
-
 export default function DocsPage() {
   return (
     <div className="text-center max-w-screen max-h-screen">

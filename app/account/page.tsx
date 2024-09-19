@@ -12,12 +12,9 @@ import {
   Badge,
   Button,
   Textarea,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { UserButton, UserProfile } from "@clerk/nextjs";
 
 import {
   InstagramLogo,
@@ -28,15 +25,6 @@ import {
   LeetCodeLogo,
   SnapChatLogo,
 } from "@/components/icons";
-
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  UserProfile,
-} from "@clerk/nextjs";
-
 import { createClient } from "@/utils/supabase/client";
 
 interface StudentData {
@@ -121,7 +109,7 @@ export default function StudentAccount() {
       <Card className="p-4">
         <CardBody>
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-            <Avatar src={studentData.avatar_url} className="w-24 h-24" />
+            <Avatar className="w-24 h-24" src={studentData.avatar_url} />
             <div className="flex-grow">
               <h2 className="text-2xl font-bold">{studentData.full_name}</h2>
               <p className="text-lg font-light">
@@ -191,8 +179,8 @@ export default function StudentAccount() {
                 studentData.achievements.map((achievement) => (
                   <div key={achievement.id} className="flex items-center gap-3">
                     <Avatar
-                      src={achievement.imageURL}
                       className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-pink-500 text-white"
+                      src={achievement.imageURL}
                     />
                     <span>{achievement.name}</span>
                   </div>
@@ -212,14 +200,14 @@ export default function StudentAccount() {
             <Tabs aria-label="Student Information">
               <Tab key="bio" title="Bio">
                 <Textarea
+                  className="mb-4 p-5"
+                  maxRows={5}
+                  minRows={3}
+                  placeholder="Enter your bio here..."
                   value={editedBio}
                   onChange={(e) => setEditedBio(e.target.value)}
-                  minRows={3}
-                  maxRows={5}
-                  placeholder="Enter your bio here..."
-                  className="mb-4 p-5"
                 />
-                <Button color="primary" onClick={saveBio} className="mt-4">
+                <Button className="mt-4" color="primary" onClick={saveBio}>
                   Save Bio
                 </Button>
               </Tab>
@@ -241,6 +229,7 @@ export default function StudentAccount() {
                         label={
                           platform.charAt(0).toUpperCase() + platform.slice(1)
                         }
+                        placeholder={`Enter your ${platform} link`}
                         value={url}
                         onChange={(e) =>
                           setEditedLinks((prev) => ({
@@ -248,7 +237,6 @@ export default function StudentAccount() {
                             [platform]: e.target.value,
                           }))
                         }
-                        placeholder={`Enter your ${platform} link`}
                       />
                     </div>
                   ))}

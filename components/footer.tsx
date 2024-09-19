@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import { Link } from "@nextui-org/link";
-import { siteConfig } from "@/config/site";
 import { usePathname } from "next/navigation";
+
+import { siteConfig } from "@/config/site";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -37,8 +38,8 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-2 text-gray-300">Contact</h3>
             <a
-              href="mailto:githubcampusclubpsgct@gmail.com"
               className="text-gray-400 hover:text-white transition-colors duration-200"
+              href="mailto:githubcampusclubpsgct@gmail.com"
             >
               githubcampusclubpsgct@gmail.com
             </a>
@@ -55,8 +56,8 @@ export default function Footer() {
                       transition-colors duration-200
                     "
                     href={value}
-                    target="_blank"
                     rel="noopener noreferrer"
+                    target="_blank"
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </Link>
