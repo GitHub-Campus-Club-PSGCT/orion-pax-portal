@@ -88,16 +88,6 @@ export default function HomePage() {
           Improve development capability with insightful and replicable coding
           challenges.
         </p>
-        <Card className="mt-12 bg-zinc-900 border-none shadow-none">
-          {/* TODO- Add a pic of the Coding Challenge Preview */}
-          <CardBody>
-            <div className="bg-zinc-800 h-64 rounded-lg flex items-center justify-center">
-              <p className="text-gray-500">
-                ----Coding Challenge Preview Image ---
-              </p>
-            </div>
-          </CardBody>
-        </Card>
       </section>
     </main>
   );
