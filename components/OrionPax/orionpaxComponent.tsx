@@ -1,10 +1,7 @@
 // File: components/OrionpaxComponent.tsx
-
 "use client";
-
 import React, { useState } from "react";
 import { Button } from "@nextui-org/button";
-
 import FileUploaderMultipleUpload from "../functionalCompnents/fileUploader";
 
 interface ComparisonResult {
@@ -18,7 +15,6 @@ interface ComparisonResult {
 const readFileContent = async (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-
     reader.onload = (event) => {
       if (event.target && typeof event.target.result === "string") {
         resolve(event.target.result);
@@ -32,10 +28,9 @@ const readFileContent = async (file: File): Promise<string> => {
 };
 
 const concatenateFileContents = async (
-  uploadedFiles: File[],
+  uploadedFiles: File[]
 ): Promise<string> => {
   const contents = await Promise.all(uploadedFiles.map(readFileContent));
-
   return contents.join("\n");
 };
 
@@ -53,7 +48,6 @@ const OrionpaxComponent: React.FC = () => {
     setError(null);
     try {
       const uploadedContent = await concatenateFileContents(uploadedFiles);
-
       const response = await fetch("/api/compareHTML", {
         method: "POST",
         headers: {
@@ -61,13 +55,10 @@ const OrionpaxComponent: React.FC = () => {
         },
         body: JSON.stringify({ uploadedContent }),
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || "Failed to compare HTML");
       }
-
       setComparisonResult(data as ComparisonResult);
     } catch (err: unknown) {
       console.error("Error in performEval:", err);
@@ -84,12 +75,26 @@ const OrionpaxComponent: React.FC = () => {
   return (
     <div className="w-full space-y-4">
       <FileUploaderMultipleUpload onFilesUploaded={handleFilesUploaded} />
-      <Button
-        disabled={uploadedFiles.length === 0 || isLoading}
-        onClick={performEval}
-      >
-        {isLoading ? "Evaluating..." : "Evaluate HTML"}
-      </Button>
+      <div className="flex gap-4 w-full  flex-row justify-center items-center">
+        <Button
+          disabled={uploadedFiles.length === 0 || isLoading}
+          onClick={performEval}
+          color="success"
+          variant="shadow"
+        >
+          {isLoading ? "Evaluating..." : "Evaluate HTML"}
+        </Button>
+        <Button
+          as="a"
+          href="https://forms.gle/nFs87PJf4bNXV2mY7"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="success"
+          variant="shadow"
+        >
+          Submit Image
+        </Button>
+      </div>
       {error && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
@@ -121,8 +126,8 @@ const OrionpaxComponent: React.FC = () => {
                 ))}
               </ul>
             </>
-          )} */}
-      {/* </div>
+          )}
+        </div>
       )} */}
     </div>
   );
