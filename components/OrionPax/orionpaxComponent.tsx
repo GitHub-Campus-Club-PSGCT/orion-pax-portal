@@ -75,7 +75,17 @@ const OrionpaxComponent: React.FC = () => {
   return (
     <div className="w-full space-y-4">
       <FileUploaderMultipleUpload onFilesUploaded={handleFilesUploaded} />
-      <div className="flex gap-4 w-full  flex-row justify-center items-center">
+      <div className="flex gap-4 w-full flex-row justify-center items-center">
+        <Button
+          as="a"
+          href="https://github.com/GitHub-Campus-Club-PSGCT/OrionPAX"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="warning"
+          variant="shadow"
+        >
+          Get your Questions...
+        </Button>
         <Button
           disabled={uploadedFiles.length === 0 || isLoading}
           onClick={performEval}
